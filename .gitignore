@@ -19,3 +19,7 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+mondelbroad_set/README.md
+
+mondelbroad_set/analysis_options.yaml
