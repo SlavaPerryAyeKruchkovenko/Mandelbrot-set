@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'dart:math';
 
 const fullCorener = 180;
