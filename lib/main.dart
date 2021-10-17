@@ -1,10 +1,9 @@
-import 'dart:async';
-import 'dart:typed_data';
+import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mondelbrot_set/Logic/Models/complex.dart';
-import 'dart:ui' as ui;
+
+import 'Logic/Models/complex.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,53 +18,55 @@ class MyApp extends StatelessWidget {
               title: const Text('Mandelbrot Set'),
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                //myPaint.paint(canvas, size);
+              },
               child: const Text('Start'),
             ),
-            body: LayoutBuilder(
+            body: Center(child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constrains) {
                 return CustomPaint(
-                    painter: MyDrawer(),
+                    painter: myPaint,
                     size: Size(constrains.maxWidth, constrains.maxHeight));
               },
-            )));
+            ))));
   }
 }
+
+CustomPainter? myPaint = MyDrawer();
 
 class MyDrawer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    /*for (double x = 0; x < size.width; x++) {
+    for (double x = 0; x < size.width; x++) {
       for (double y = 0; y < size.height; y++) {
         int count = 0;
+        double _x = (x - size.width / 2.0) / (size.width / 6.0);
+        double _y = (y - size.height / 2.0) / (size.height / 6.0);
         Complex z = Complex(0, 0);
-        Complex c = Complex(x, y);
-        for (count = 0; count <= 100; count) {
+        Complex c = Complex(_x, _y);
+
+        Complex getComplex(Complex z, Complex c) {
           z = z ^ 2;
           z = z + c;
-          if (z.magrnitude() > 2) break;
+          count++;
+          if (z.magrnitude() > 2 || count >= 100) {
+            return z;
+          } else {
+            return getComplex(z, c);
+          }
         }
+
+        z = getComplex(z, c);
         var rect = Offset(x, y) & const Size(1, 1);
-        BlendMode blendMode = BlendMode.src;
-        var color =
-            count < 100 ? Color.fromRGBO(count, count, count, 1) : Colors.white;
-        canvas.drawColor(color, blendMode);
+        var paint = Paint()
+          ..color = count < 100
+              ? Color.fromARGB(255, (count * 7) % 255, 0, (count * 7) % 255)
+              : Color.fromRGBO(count, count, count, 1);
+
+        canvas.drawRect(rect, paint);
       }
-    }*/
-    var rect = Offset(0, 0) & Size(10, 10);
-    final c = Completer<ui.Image>();
-    final pixels = Int32List(1024 * 1024);
-    for (int i = 0; i < pixels.length; i++) {
-      pixels[i] = Colors.red as int;
     }
-    ui.decodeImageFromPixels(
-      pixels.buffer.asUint8List(),
-      1024,
-      1024,
-      ui.PixelFormat.rgba8888,
-      c.complete,
-    );
-    canvas.drawImage(c.future.s, const Offset(0, 0), Paint());
   }
 
   @override
